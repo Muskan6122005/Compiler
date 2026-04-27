@@ -42,7 +42,7 @@ function getTopLevelKey(data: unknown): string {
 export default function OutputPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabKey>('db_schema');
-  const [schemas, setSchemas] = useState<Record<TabKey, unknown> | null>(null);
+  const [schemas, setSchemas] = useState<Record<TabKey, any> | null>(null);
   const [validation, setValidation] = useState<unknown>(null);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -196,8 +196,8 @@ export default function OutputPage() {
               onClick={() => setActiveTab(tab.key)}
             >
               <div style={{ marginBottom: 6, fontSize: 18 }}>{tab.icon}</div>
-              <div className="stat-value" style={{ fontSize: 22, color: tab.color }}>{count}</div>
-              <div className="stat-label">{tab.label.split(' ')[0]} {topKey}</div>
+              <div className="stat-value" style={{ fontSize: 22, color: tab.color }}>{(count as string)}</div>
+              <div className="stat-label">{tab.label.split(' ')[0]} {(topKey as string)}</div>
               <div style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: 4 }}>
                 {sizeKb} KB
               </div>
