@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 
     // Call Groq
     let result;
-    let validated = { success: false, errors: [], data: null, retries: 0, repaired: false };
+    let validated = { success: false, errors: [] as string[], data: null as Stage1Output | null, retries: 0, repaired: false };
 
     try {
       result = await callGroq({

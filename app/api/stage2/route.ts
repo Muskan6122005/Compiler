@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     const engine = new ValidationEngine(apiKey);
 
     let result;
-    let validated = { success: false, errors: [], data: null, retries: 0, repaired: false };
+    let validated = { success: false, errors: [] as string[], data: null as Stage2Output | null, retries: 0, repaired: false };
 
     try {
       result = await callGroq({

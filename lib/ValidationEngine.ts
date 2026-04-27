@@ -84,7 +84,7 @@ export class ValidationEngine {
 
         const result = schema.safeParse(parsed);
         if (result.success) {
-          return { success: true, data: result.data as T, errors: [], repaired, retries };
+          return { success: true, data: result.data as T, errors: [] as string[], repaired, retries };
         }
 
         lastError = this.formatZodError(result.error);
