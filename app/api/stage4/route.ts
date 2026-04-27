@@ -49,7 +49,10 @@ export async function POST(req: NextRequest) {
         userMessage: buildStage4UserMessage(
           stage1_output,
           stage2_output,
-          stage3_output,
+          stage3_output.db_schema,
+          stage3_output.api_schema,
+          stage3_output.ui_schema,
+          stage3_output.auth_schema,
           knownIssues
         ),
         temperature: 0.1,
