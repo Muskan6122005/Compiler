@@ -8,7 +8,7 @@ import {
 
 export interface ValidationResult<T> {
   success: boolean;
-  data?: T;
+  data: T | null;
   errors: string[];
   repaired: boolean;
   retries: number;
