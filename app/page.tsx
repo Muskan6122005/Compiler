@@ -1,65 +1,161 @@
-import Image from "next/image";
+'use client';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+const EXAMPLE_PROMPTS = [
+  'Build a CRM with login, contacts, dashboard, role-based access, and premium plan with payments. Admins can see analytics.',
+  'E-commerce platform with product catalog, cart, checkout, Stripe integration, and seller dashboard.',
+  'Project management tool like Jira with sprints, tickets, team members, and time tracking.',
+  'Healthcare patient portal with appointment booking, medical records, and doctor profiles.',
+  'EdTech platform with courses, video lessons, quizzes, certificates, and instructor dashboard.',
+  'Food delivery app with restaurant listings, ordering, driver tracking, and loyalty points.',
+];
 
 export default function Home() {
+  const router = useRouter();
+  const [prompt, setPrompt] = useState('');
+  const [charCount, setCharCount] = useState(0);
+
+  const handlePromptChange = (val: string) => {
+    setPrompt(val);
+    setCharCount(val.length);
+  };
+
+  const handleRun = () => {
+    if (!prompt.trim()) return;
+    // Store prompt in sessionStorage for the generate page
+    sessionStorage.setItem('compiler_prompt', prompt.trim());
+    router.push('/generate');
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="page-content" style={{ maxWidth: 800, paddingTop: 80 }}>
+      {/* Hero */}
+      <div style={{ marginBottom: 48, textAlign: 'center' }}>
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 8,
+          padding: '6px 16px',
+          background: 'var(--accent-primary-dim)',
+          border: '1px solid var(--border-accent)',
+          borderRadius: 100,
+          marginBottom: 24,
+          fontSize: 12,
+          fontFamily: 'var(--font-mono)',
+          color: 'var(--accent-primary)',
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+        }}>
+          ⚙ 4-Stage AI Pipeline
+        </div>
+        <h1 style={{ fontSize: 52, marginBottom: 16, letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+          Natural Language →<br />
+          <span style={{ color: 'var(--accent-primary)' }}>Executable Config</span>
+        </h1>
+        <p style={{ fontSize: 17, color: 'var(--text-secondary)', maxWidth: 560, margin: '0 auto', lineHeight: 1.7 }}>
+          COMPILER parses your product idea through 4 AI stages — intent extraction, system design, 
+          schema generation, and cross-layer validation — producing production-ready app configurations.
+        </p>
+      </div>
+
+      {/* Input Card */}
+      <div className="card" style={{ marginBottom: 24, padding: 28 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <label style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Product Description
+          </label>
+          <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+            {charCount} chars
+          </span>
+        </div>
+        <textarea
+          id="prompt-input"
+          className="textarea"
+          style={{ minHeight: 180, fontSize: 15 }}
+          placeholder="Describe your product in detail. Include features, user roles, payment needs, admin capabilities..."
+          value={prompt}
+          onChange={(e) => handlePromptChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) handleRun();
+          }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+
+        {/* Examples */}
+        <div style={{ marginTop: 12 }}>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 8, fontFamily: 'var(--font-mono)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            Examples — click to use
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {EXAMPLE_PROMPTS.map((ex, i) => (
+              <button
+                key={i}
+                id={`example-${i}`}
+                className="example-pill"
+                onClick={() => handlePromptChange(ex)}
+                title={ex}
+              >
+                {ex.slice(0, 42)}...
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </div>
+
+
+
+      {/* CTA */}
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+        <button
+          id="run-pipeline-btn"
+          className="btn btn-primary btn-lg"
+          onClick={handleRun}
+          disabled={!prompt.trim()}
+          style={{ flex: 1, fontSize: 15, padding: '14px 24px' }}
+        >
+          ⚙ Compile Application Config
+        </button>
+        <button
+          className="btn btn-secondary"
+          style={{ padding: '14px 18px' }}
+          onClick={() => router.push('/eval')}
+          title="View Evaluation Dashboard"
+        >
+          📊 Eval
+        </button>
+      </div>
+      <p style={{ marginTop: 10, fontSize: 12, color: 'var(--text-muted)', textAlign: 'center' }}>
+        Press <kbd style={{ padding: '2px 6px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 4, fontFamily: 'var(--font-mono)', fontSize: 11 }}>⌘ Enter</kbd> to run
+      </p>
+
+      {/* Pipeline Overview */}
+      <div style={{ marginTop: 56 }}>
+        <div style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 20, textAlign: 'center' }}>
+          Pipeline Architecture
         </div>
-      </main>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+          {[
+            { n: '01', label: 'Intent', desc: 'Parse natural language into structured requirements', color: 'var(--accent-primary)' },
+            { n: '02', label: 'Design', desc: 'Convert requirements into full system architecture', color: 'var(--info)' },
+            { n: '03', label: 'Generate', desc: '4 parallel schemas: DB · API · UI · Auth', color: 'var(--warning)' },
+            { n: '04', label: 'Validate', desc: 'Cross-layer consistency checks + auto-repair', color: 'var(--success)' },
+          ].map((s) => (
+            <div key={s.n} style={{
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border)',
+              borderTopColor: s.color,
+              borderTopWidth: 2,
+              borderRadius: 'var(--radius-lg)',
+              padding: '16px',
+              position: 'relative',
+            }}>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-muted)', marginBottom: 6 }}>{s.n}</div>
+              <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 6, color: s.color }}>{s.label}</div>
+              <div style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.5 }}>{s.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
