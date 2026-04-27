@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { callGroq } from '@/lib/groqClient';
-import { ValidationEngine } from '@/lib/ValidationEngine';
+import { ValidationEngine, ValidationResult } from '@/lib/ValidationEngine';
 import { STAGE2_SYSTEM_PROMPT, buildStage2UserMessage } from '@/prompts/stage2';
 import { Stage2Output } from '@/lib/schemaContracts';
 
@@ -21,7 +21,13 @@ export async function POST(req: NextRequest) {
     const engine = new ValidationEngine(apiKey);
 
     let result;
-    let validated = { success: false, errors: [] as string[], data: null as Stage2Output | null, retries: 0, repaired: false };
+    let validated: ValidationResult<Stage2Output> = { 
+      success: false, 
+      errors: [] as string[], 
+      data: null as any, 
+      retries: 0, 
+      repaired: false 
+    };
 
     try {
       result = await callGroq({

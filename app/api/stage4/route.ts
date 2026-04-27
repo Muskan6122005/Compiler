@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { callGroq } from '@/lib/groqClient';
-import { ValidationEngine } from '@/lib/ValidationEngine';
+import { ValidationEngine, ValidationResult } from '@/lib/ValidationEngine';
 import { STAGE4_SYSTEM_PROMPT, buildStage4UserMessage } from '@/prompts/stage4';
 import { Stage4Output, Stage3AOutput, Stage3BOutput, Stage3COutput, Stage3DOutput } from '@/lib/schemaContracts';
 
@@ -35,7 +35,13 @@ export async function POST(req: NextRequest) {
 
     // 3. Call Stage 4 LLM to perform global validation and final schema polish
     let result;
-    let validated = { success: false, errors: [] as string[], data: null as Stage4Output | null, retries: 0, repaired: false };
+    let validated: ValidationResult<Stage4Output> = { 
+      success: false, 
+      errors: [] as string[], 
+      data: null as any, 
+      retries: 0, 
+      repaired: false 
+    };
 
     try {
       result = await callGroq({

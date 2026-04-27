@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { callGroq } from '@/lib/groqClient';
-import { ValidationEngine } from '@/lib/ValidationEngine';
+import { ValidationEngine, ValidationResult } from '@/lib/ValidationEngine';
 import { STAGE1_SYSTEM_PROMPT, buildStage1UserMessage } from '@/prompts/stage1';
 import { Stage1Output } from '@/lib/schemaContracts';
 
@@ -22,7 +22,13 @@ export async function POST(req: NextRequest) {
 
     // Call Groq
     let result;
-    let validated = { success: false, errors: [] as string[], data: null as Stage1Output | null, retries: 0, repaired: false };
+    let validated: ValidationResult<Stage1Output> = { 
+      success: false, 
+      errors: [] as string[], 
+      data: null as any, 
+      retries: 0, 
+      repaired: false 
+    };
 
     try {
       result = await callGroq({
