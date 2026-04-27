@@ -96,6 +96,7 @@ export class ValidationEngine {
 
     return {
       success: false,
+      data: null,
       errors: [lastError],
       repaired,
       retries,
