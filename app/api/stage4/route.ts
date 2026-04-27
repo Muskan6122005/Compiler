@@ -80,6 +80,7 @@ export async function POST(req: NextRequest) {
       fixes_applied: 0,
       final_schemas: stage3_output,
       validation_results: {
+        is_valid: false,
         raw_issues: preCheckIssues.map(i => ({
           rule: i.rule,
           layer: i.layer,

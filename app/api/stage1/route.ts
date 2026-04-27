@@ -53,7 +53,8 @@ export async function POST(req: NextRequest) {
         business_rules: ["Users must login"],
         payment_features: false,
         analytics_features: false,
-        ambiguities: []
+        ambiguities: [],
+        assumptions: ["Standard web app defaults"]
       };
 
       return NextResponse.json({

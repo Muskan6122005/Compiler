@@ -46,9 +46,9 @@ export async function POST(req: NextRequest) {
       console.error('Validation failed for stage 2, using fallback mock.', validated.errors);
       const mockResult: Stage2Output = {
         architecture_pattern: "Monolithic Next.js",
-        entities: [{ entity_name: "Account", attributes: ["id", "balance"], relationships: [] }],
+        entities: [{ entity_name: "Account", attributes: [{ name: "id", type: "uuid", required: true, unique: true }, { name: "balance", type: "number", required: true, unique: false }], relationships: [] }],
         workflows: [{ workflow_name: "Login Flow", steps: ["Login", "Verify JWT"], actors: ["User"] }],
-        access_control_model: "RBAC"
+        access_control_model: { strategy: "RBAC", role_hierarchy: { admin: ["user"] } }
       };
 
       return NextResponse.json({

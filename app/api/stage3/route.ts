@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
       db_retries = v.retries;
     } catch (e) {
       console.error('Stage 3A failed:', e);
-      db_schema = { tables: [{ table_name: 'users', columns: [{ name: 'id', type: 'uuid', is_primary: true }] }] };
+      db_schema = { tables: [{ table_name: 'users', columns: [{ name: 'id', type: 'uuid' }] }] };
     }
 
     // ─── 3B: API Schema ────────────────────────────────────────────────────────────
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
       api_retries = v.retries;
     } catch (e) {
       console.error('Stage 3B failed:', e);
-      api_schema = { endpoints: [{ method: 'GET', path: '/api/health', auth_required: false }] };
+      api_schema = { endpoints: [{ method: 'GET', path: '/api/health', auth_required: false, response_schema: { status: 'string' } }] };
     }
 
     // ─── 3C: UI ─────────────────────────────────────────────────────────────
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
       ui_retries = v.retries;
     } catch (e) {
       console.error('Stage 3C failed:', e);
-      ui_schema = { pages: [{ page_name: 'Dashboard', route: '/', components: [] }] };
+      ui_schema = { pages: [{ page_name: 'Dashboard', route: '/', components: [{ type: 'Text', props: { text: 'Welcome' } }] }] };
     }
 
     // ─── 3D: Auth ───────────────────────────────────────────────────────────
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
       auth_retries = v.retries;
     } catch (e) {
       console.error('Stage 3D failed:', e);
-      auth_schema = { roles: [{ role_name: 'admin', permissions: ['manage'] }], auth_strategy: 'jwt' };
+      auth_schema = { auth_strategy: 'JWT', roles: [{ role_name: 'admin', permissions: ['manage'] }], permission_model: [{ resource: 'all', action: 'manage', allowed_roles: ['admin'] }], rate_limits: {} };
     }
 
     return NextResponse.json({
